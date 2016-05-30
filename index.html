@@ -27,12 +27,12 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <div class="container">
                     <ul class="nav navbar-nav">
-                        <li><a href="#" ng-click="changeTo('code')">Исходный код</a></li>
-                        <li><a href="#" ng-click="changeTo('grammar')">Граматика</a></li>
-                        <li><a href="#" ng-click="changeTo('relation')">Таблица отношений</a></li>
-                        <li><a href="#" ng-click="changeTo('lex')">Лексический анализатор</a></li>
-                        <li><a href="#" ng-click="changeTo('synth')">Синтаксический анализатор</a></li>
-                        <li><a href="#" ng-click="changeTo('poliz')">ПОЛИЗ</a></li>
+                        <li><a href="#" ng-click="changeTo('code')">Source code</a></li>
+                        <li><a href="#" ng-click="changeTo('grammar')">Grammar</a></li>
+                        <li><a href="#" ng-click="changeTo('relation')">Relation table</a></li>
+                        <li><a href="#" ng-click="changeTo('lex')">Lexeme analizator</a></li>
+                        <li><a href="#" ng-click="changeTo('synth')">Syntax analizator</a></li>
+                        <li><a href="#" ng-click="changeTo('poliz')">RPN</a></li>
                     </ul>
                 </div>
 
@@ -45,25 +45,29 @@
         </div>
         <div class="container">
             <div class="col-md-12" ng-show="sourceCode">
-                <h1>Исходный код</h1>
-                <textarea name="name" id="input" rows="12" cols="70" ng-model="source">{{source}}</textarea>
+                <h1>Source code</h1>
+                <textarea name="name" id="input" rows="12" cols="150" ng-model="source">{{source}}</textarea>
                 <br />
-                <button class="btn btn-default" name="button" ng-click="lexAn1()">Запустить лексический анализатор</button>
-                <button class="btn btn-default" name="button" ng-show="(allowSynth == true) && (error == 'No error!')" ng-click="synthAn2()">Запустить синтаксический анализатор</button>
+                <button class="btn btn-default btn-block" name="button" ng-click="lexAn1();synthAn2();buildPoliz();evalPoliz();">Run</button>
+                <h1>Output</h1>
+                <textarea name="name" id="output" rows="12" cols="150">{{output}}</textarea>
+                <br />
+                <button class="btn btn-default btn-block" ng-click="output = '';"  name="button">Clear output</button>
+                <!-- <button class="btn btn-default" name="button" ng-show="(allowSynth == true) && (error == 'No error!')" ng-click="synthAn2()">Запустить синтаксический анализатор</button> -->
             </div>
             <div class="col-md-12">
                 <br>
                 <pre ng-show="grammarTable">{{grammar}}
                 </pre>
                 <div class="" ng-show="polizBuilder">
-                    <button class="btn btn-danger btn-block" type="button" name="button" ng-click="buildPoliz()">Построить полиз</button>
+                    <!-- <button class="btn btn-danger btn-block" type="button" name="button" ng-click="buildPoliz()">Построить полиз</button> -->
                     <h3>{{poliz}}</h3>
-                    <button class="btn btn-primary btn-block" type="button" name="button" ng-click="evalPoliz()">Вычислить полиз</button>
+                    <!-- <button class="btn btn-primary btn-block" type="button" name="button" ng-click="evalPoliz()">Вычислить полиз</button> -->
                     <div class="col-md-12" ng-show="output">
-                        <h1>Вывод</h1>
+                        <h1>Output</h1>
                         <textarea name="name" id="output" rows="20" cols="150">{{output}}</textarea>
                         <br />
-                        <button class="btn btn-default btn-block" ng-click="output = '';"  name="button">Очистить вывод</button>
+                        <button class="btn btn-default btn-block" ng-click="output = '';"  name="button">Clear output</button>
                     </div>
                 </div>
                 <!-- <button data-toggle="collapse" data-target="#dem">Relation table</button> -->
@@ -95,16 +99,16 @@
                     <thead>
                         <tr>
                             <th>
-                                Шаг
+                                Step
                             </th>
                             <th>
-                                Ввод
+                                Input
                             </th>
                             <th>
-                                Отношение
+                                Relation
                             </th>
                             <th>
-                                Вывод
+                                Output
                             </th>
                         </tr>
                     </thead>
@@ -131,10 +135,10 @@
                     <thead>
                         <tr>
                             <th>
-                                Код переменной
+                                Variable id
                             </th>
                             <th>
-                                Название переменной
+                                Variable name
                             </th>
                         </tr>
                     </thead>
@@ -155,10 +159,10 @@
                     <thead>
                         <tr>
                             <th>
-                                Номер метки
+                                Label id
                             </th>
                             <th>
-                                Имя метки
+                                Label name
                             </th>
                         </tr>
                     </thead>
@@ -179,10 +183,10 @@
                     <thead>
                         <tr>
                             <th>
-                                Номер константы
+                                Const id
                             </th>
                             <th>
-                                Имя константы
+                                Const name
                             </th>
                         </tr>
                     </thead>
@@ -207,13 +211,13 @@
                                     #
                                 </th>
                                 <th>
-                                    Имя лексемы
+                                    Lexeme name
                                 </th>
                                 <th>
-                                    Код лексемы
+                                    Lexeme code
                                 </th>
                                 <th>
-                                    Код переменной
+                                    Lexeme id
                                 </td>
                             </tr>
                         </thead>
