@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen" title="no title" charset="utf-8">
+        <script src="lib/angular.min.js"></script>
+        <script src="lib/jquery-2.2.3.min.js"></script>
+        <script src="js/app.js"></script>
+        <script src="js/MainCtrl.js"></script>
+    </head>
+    <body ng-app="App" ng-controller="MainCtrl">
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">Translator</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <div class="container">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#" ng-click="changeTo('code')">Исходный код</a></li>
+                        <li><a href="#" ng-click="changeTo('grammar')">Граматика</a></li>
+                        <li><a href="#" ng-click="changeTo('relation')">Таблица отношений</a></li>
+                        <li><a href="#" ng-click="changeTo('lex')">Лексический анализатор</a></li>
+                        <li><a href="#" ng-click="changeTo('synth')">Синтаксический анализатор</a></li>
+                        <li><a href="#" ng-click="changeTo('poliz')">ПОЛИЗ</a></li>
+                    </ul>
+                </div>
+
+
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+        <div class="container" ng-show="error != 'No error!'">
+            <h1>{{error}}</h1>
+        </div>
+        <div class="container">
+            <div class="col-md-12" ng-show="sourceCode">
+                <h1>Исходный код</h1>
+                <textarea name="name" id="input" rows="12" cols="70" ng-model="source">{{source}}</textarea>
+                <br />
+                <button class="btn btn-default" name="button" ng-click="lexAn1()">Запустить лексический анализатор</button>
+                <button class="btn btn-default" name="button" ng-show="(allowSynth == true) && (error == 'No error!')" ng-click="synthAn2()">Запустить синтаксический анализатор</button>
+            </div>
+            <div class="col-md-12">
+                <br>
+                <pre ng-show="grammarTable">{{grammar}}
+                </pre>
+                <div class="" ng-show="polizBuilder">
+                    <button class="btn btn-danger btn-block" type="button" name="button" ng-click="buildPoliz()">Построить полиз</button>
+                    <h3>{{poliz}}</h3>
+                    <button class="btn btn-primary btn-block" type="button" name="button" ng-click="evalPoliz()">Вычислить полиз</button>
+                    <div class="col-md-12" ng-show="output">
+                        <h1>Вывод</h1>
+                        <textarea name="name" id="output" rows="20" cols="150">{{output}}</textarea>
+                        <br />
+                        <button class="btn btn-default btn-block" ng-click="output = '';"  name="button">Очистить вывод</button>
+                    </div>
+                </div>
+                <!-- <button data-toggle="collapse" data-target="#dem">Relation table</button> -->
+                <!-- <div class="collapse" id="dem"> -->
+                    <table class="table table-hover table-bordered" ng-show="relationTable">
+                        <thead>
+                            <tr>
+                                <th>
+
+                                </th>
+                                <th ng-repeat="x in fields">
+                                    <h1>{{x}}</h1>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="x in fields track by $index">
+                                <td>
+                                    <h1>{{x}}</h1>
+                                </td>
+                                <td ng-repeat="y in relations[$index]">
+                                    <h1>{{y.value}}</h1>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                <!-- </div> -->
+                <table class="table table-hover" ng-show="synthAnalizator">
+                    <thead>
+                        <tr>
+                            <th>
+                                Шаг
+                            </th>
+                            <th>
+                                Ввод
+                            </th>
+                            <th>
+                                Отношение
+                            </th>
+                            <th>
+                                Вывод
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="data in synthOutput">
+                            <td>
+                                {{data.step + 1}}
+                            </td>
+                            <td>
+                                {{data.input}}
+                            </td>
+                            <td>
+                                {{data.relation}}
+                            </td>
+                            <td>
+                                {{data.output}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <table class="table table-hover" ng-show="lexemAnalizator">
+                    <thead>
+                        <tr>
+                            <th>
+                                Код переменной
+                            </th>
+                            <th>
+                                Название переменной
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="data in vars">
+                            <td>
+                                {{data.index}}
+                            </td>
+                            <td>
+                                {{data.variable}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <table class="table table-hover" ng-show="lexemAnalizator">
+                    <thead>
+                        <tr>
+                            <th>
+                                Номер метки
+                            </th>
+                            <th>
+                                Имя метки
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="data in labels">
+                            <td>
+                                {{data.index}}
+                            </td>
+                            <td>
+                                {{data.variable}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <table class="table table-hover" ng-show="lexemAnalizator">
+                    <thead>
+                        <tr>
+                            <th>
+                                Номер константы
+                            </th>
+                            <th>
+                                Имя константы
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="data in consts">
+                            <td>
+                                {{data.index}}
+                            </td>
+                            <td>
+                                {{data.constant}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-12">
+                <div class="">
+                    <table class="table table-hover" ng-show="lexemAnalizator">
+                        <thead>
+                            <tr>
+                                <th>
+                                    #
+                                </th>
+                                <th>
+                                    Имя лексемы
+                                </th>
+                                <th>
+                                    Код лексемы
+                                </th>
+                                <th>
+                                    Код переменной
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="data in split">
+                                <td>
+                                    {{data.lexCode}}
+                                </td>
+                                <td>
+                                    {{data.lex}}
+                                </td>
+                                <td>
+                                    {{data.varCode}}
+                                </td>
+                                <td>
+                                    {{data.constCode}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    </body>
+</html>
